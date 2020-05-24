@@ -1,0 +1,75 @@
+*{
+  /* font-family: 'Poppins', sans-serif; */
+  font-family: 'B612', sans-serif;
+}
+body{
+  background-color: #fbfbfb;
+}
+@media (max-width: 575.98px) { 
+  #tablechart{
+    display: flex;
+    flex-direction: column;
+  }
+  /* #livetable{
+    height: auto;
+    width: auto;
+  } */
+  #datacards{
+    width: 100%;
+  }
+    #states{
+    display: none;
+  }
+ }
+
+/* // Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) { 
+  #tablechart{
+    display: flex;
+    flex-direction: column;
+  }
+  /* #livetable{
+    height: 370px; 
+    width: 100%;
+  } */
+  #datacards{
+    width: 100%;
+  }
+  #states{
+    display: none;
+  }
+ }
+
+/* // Medium devices (tablets, less than 992px) */
+@media (max-width: 991.98px) { 
+  #tablechart{
+    display: flex;
+    flex-direction: column;
+  }
+  /* #livetable{
+    height: 370px; 
+    width: 100%;
+  } */
+  #states{
+    display: none;
+  }
+ }
+
+/* // Large devices (desktops, less than 1200px) */
+@media (min-width: 1199.98px) { 
+  #tablechart{
+    display: flex;
+  }
+  /* #livetable{
+    height: 370px; 
+    width: 50%;
+  } */
+  #states{
+    display: none;
+  }
+ }
+ @media (min-width: 2560px) { 
+   #app{
+     font-size: larger;
+   }
+ }

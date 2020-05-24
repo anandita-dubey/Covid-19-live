@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Description" content="Covid-19 Live Detector.">
+    <title>Covid-19 Live</title>
+    <script src="https://unpkg.com/vue"></script>
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css2?family=B612&display=swap" rel="stylesheet">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.18.0/css/mdb.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.18.0/js/mdb.min.js"></script>
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.4.6/dist/css/uikit.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.4.6/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.4.6/dist/js/uikit-icons.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        window.onload = function () {
+            const datacanvas = document.getElementById('datacanvas');
+            const chart = document.getElementById('chart1');
+            datacanvas.setAttribute('style', 'display:none;');
+            chart.setAttribute('style', 'display:none;');
+        }
+    </script>
+</head>
+
+<body>
+    <div id="app">
+        <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-white shadow-sm bg-white z-depth-1">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">Covid-19 <span><u>Live</u></span> </a>
+            </div>
+        </nav>
+        <div class="container mt-3">
+            <div>
+                <p class="text-capitalize">Enter the country</p>
+                <input type="text" class="uk-input mb-3" name="country" id="countryname">
+                <button v-on:click="showdata" class="uk-button uk-button-primary mb-3 shadow mb-2">Get Data</button>
+            </div>
+            <div class="shadow p-3 mb-5 bg-white  tab-content" id="datacanvas">
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-overview-tab" data-toggle="tab" href="#nav-overview"
+                        role="tab" aria-controls="nav-home" aria-selected="true">Overview</a>
+                    <a class="nav-item nav-link" id="nav-death-tab" data-toggle="tab" href="#nav-death" role="tab"
+                        aria-controls="nav-profile" aria-selected="false">Mortality</a>
+                    <a class="nav-item nav-link" id="nav-recovery-tab" data-toggle="tab" href="#nav-recovery" role="tab"
+                        aria-controls="nav-contact" aria-selected="false">Recovery</a>
+                    <a class="nav-item nav-link" id="nav-global-tab" data-toggle="tab" href="#nav-global" role="tab"
+                        aria-controls="nav-global" aria-selected="false">Global</a>
+                    <a class="nav-item nav-link" id="nav-about-tab" data-toggle="tab" href="#nav-about" role="tab"
+                        aria-controls="nav-about" aria-selected="false">About</a>
+
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active mx-auto" id="nav-overview" role="tabpanel"
+                        aria-labelledby="nav-overview-tab">
+                        <div class="row row-cols-1 row-cols-md-2 mx-auto" id="datacards">
+                            <div v-for="result in confirmedCases"
+                                class="uk-card uk-card-secondary uk-card-hover uk-card-body uk-card-small mx-auto mb-3 mt-3 hoverable uk-light"
+                                style="max-width: 16rem;">
+                                <div class="uk-text-lead uk-text-primary uk-text-bold uk-text-justify">
+                                    {{result['Date'].slice(0,10)}} </div>
+                                <div class="uk-card-body">
+                                    <ul class="uk-list uk-text-justify">
+                                        <li>Country : {{result['Country']}}</li>
+                                        <li> # of Cases : {{result['Cases']}} </li>
+                                        <li>Status : {{result['Status']}}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <div id="tablechart">
+                                <div class="table-responsive text-nowrap" id="drtable">
+                                    <h4 class="py-2 mb-3 text-center">Death and Recovered Record</h4>
+                                    <table class="uk-table uk-table-divider table-hover">
+                                        <!-- <caption align="top">Latest Death and Recovered Record</caption> -->
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Date</th>
+                                                <th scope="col">Deaths</th>
+                                                <th scope="col">Recovered</th>
+                                                <!-- <th scope="col">Handle</th> -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="result in deathCases">
+                                                <th scope="row">{{result['Date'].slice(0,10)}}</th>
+                                                <td>{{result['Deaths']}}</td>
+                                                <td>{{result['Recovered']}}</td>
+                                                <!-- <td>@{{result['Cases']}}</td> -->
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="chart1">
+                                    <div id="caseschartcontainer"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-death" role="tabpanel" aria-labelledby="nav-death-tab">
+                        <div class="uk-margin" id="mprovincelist">
+                            <p class="text-capitalize uk-margin-top">Choose province</p>
+                            <select class="uk-select uk-margin-bottom" id="mprovinceoption">
+                                <option v-for="province in uniqueprovince">{{province}}</option>
+                            </select>
+                            <button v-on:click="mortalitydata"
+                                class="uk-button uk-button-small uk-button-primary mb-3 shadow mb-2">Get Reported
+                                Data</button>
+                        </div>
+                        <div id="deathchartcontainer" class="uk-margin-top"></div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-recovery" role="tabpanel" aria-labelledby="nav-recovery-tab">
+                        <div class="uk-margin" id="rprovincelist">
+                            <p class="text-capitalize uk-margin-top">Choose province</p>
+                            <select class="uk-select uk-margin-bottom" id="rprovinceoption">
+                                <option v-for="province in uniqueprovince">{{province}}</option>
+                            </select>
+                            <button v-on:click="recovereddata"
+                                class="uk-button uk-button-small uk-button-primary mb-3 shadow mb-2">Get Reported
+                                Data</button>
+                        </div>
+                        <div id="recoveredchartcontainer" class="uk-margin-top"></div>
+                    </div>
+                    <div class="tab-pane fade " id="nav-global" role="tabpanel" aria-labelledby="nav-global-tab">
+                        <div v-for="result in globalData"
+                            class="uk-card uk-card-hover uk-card-body uk-dark uk-margin-bottom uk-margin-top"
+                            style="max-width: auto">
+                            <div class="uk-text-lead uk-text-primary uk-text-bold uk-text-justify">
+                                Global Data</div>
+                            <div class="uk-card-body" id="globalcontainer">
+                                <ul class="uk-list uk-text-justify">
+                                    <li>NewConfirmed:{{result['NewConfirmed']}}</li>
+                                    <li>TotalConfirmed:{{result['TotalConfirmed']}}</li>
+                                    <li>NewDeaths:{{result['NewDeaths']}}</li>
+                                    <li>TotalDeaths:{{result['TotalDeaths']}}</li>
+                                    <li>NewRecovered:{{result['NewRecovered']}}</li>
+                                    <li>TotalRecovered:{{result['TotalRecovered']}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="globaldatacontainer"></div>
+                    </div>
+                    <div class="tab-pane fade py-5 px-5 uk-text-center" id="nav-about" role="tabpanel"
+                        aria-labelledby="about-tab">
+                        COVID-19 is the infectious disease caused by the most recently discovered coronavirus. This new
+                        virus and disease were unknown before the outbreak began in Wuhan, China, in December 2019.
+                        COVID-19 is now a pandemic affecting many countries globally.
+                        The Detector web app can be used to monitor situation in your country and around the world.
+                        <br><span class="uk-text-primary">Built using Vue.js.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+
+</html>
